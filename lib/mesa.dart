@@ -112,8 +112,7 @@ alertDialog(BuildContext context) {
               status[pos] = "Aberta";
               Navigator.of(context).pop();
 
-              Navigator.push(context,
-                  new MaterialPageRoute(builder: (context) => Pedido()));
+              Navigator.of(context).pushNamed("/teste");
             },
             child: Text(
               "Pedir",

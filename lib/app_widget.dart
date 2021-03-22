@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaria/pedido.dart';
+import 'package:pizzaria/teste.dart';
 
 import 'mesa.dart';
 
@@ -9,7 +11,12 @@ class AppWidget extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
       ),
-      home: Mesa(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => Mesa(),
+        "/pedido": (context) => Pedido(),
+        "/teste": (context) => Teste(),
+      },
     );
   }
 }
