@@ -112,7 +112,7 @@ alertDialog(BuildContext context) {
               status[pos] = "Aberta";
               Navigator.of(context).pop();
 
-              Navigator.of(context).pushNamed("/teste");
+              Navigator.of(context).pushNamed("/pedido");
             },
             child: Text(
               "Pedir",
