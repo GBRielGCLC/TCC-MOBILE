@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pizzaria/pedido.dart';
 
 import 'Icons/menu_icons.dart';
 
@@ -63,28 +62,30 @@ buildListView() {
       return Column(
         children: [
           SizedBox(height: 10.0),
-          Card(
-            child: ListTile(
-                onTap: () {},
-                leading: Icon(MenuIcon.table),
-                title: Text('${itens[index]}'),
-                subtitle: Text(
-                  '${status[index]}',
-                  style: TextStyle(color: corStatus),
-                ),
-                trailing: IconButton(
-                  onPressed: () {
-                    alertDialog(context);
-                    nMesa = index + 1;
-                    pos = index;
-                  },
-                  icon: Icon(Icons.add_shopping_cart),
-                  iconSize: 40,
-                )),
-            elevation: 15,
-            color: Colors.grey[200],
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Card(
+              child: ListTile(
+                  onTap: () {},
+                  leading: Icon(MenuIcon.table),
+                  title: Text('${itens[index]}'),
+                  subtitle: Text(
+                    '${status[index]}',
+                    style: TextStyle(color: corStatus),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      alertDialog(context);
+                      nMesa = index + 1;
+                      pos = index;
+                    },
+                    icon: Icon(Icons.add_shopping_cart),
+                    iconSize: 40,
+                  )),
+              elevation: 3,
+              color: Colors.grey[200],
+              shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
           ),
         ],
       );
@@ -112,7 +113,7 @@ alertDialog(BuildContext context) {
               status[pos] = "Aberta";
               Navigator.of(context).pop();
 
-              Navigator.of(context).pushNamed("/pedido");
+              Navigator.of(context).pushNamed("/teste");
             },
             child: Text(
               "Pedir",
