@@ -47,8 +47,13 @@ class _TesteState extends State<Teste> {
           return ListView.builder(
             itemCount: bebida.length,
             itemBuilder: (context, index){
-              return DropdownButton(
-                hint: Text("Select"),
+              return Card(
+                child: ListTile(
+                  title: Text("${bebida[index]['nome']}"),
+                  subtitle: Text("R\$ ${bebida[index]['preco']}"),
+                ),
+                elevation: 3,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               );
             },
           );

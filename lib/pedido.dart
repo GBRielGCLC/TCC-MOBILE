@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pizzaria/metodos/carregarDados.dart';
+import 'package:pizzaria/metodos/carregarDados/bebida.dart';
+import 'package:pizzaria/metodos/carregarDados/sabor.dart';
+import 'package:pizzaria/metodos/carregarDados/tamanho.dart';
 
 class Pedido extends StatefulWidget {
   @override
@@ -43,4 +45,5 @@ class _PedidoState extends State<Pedido> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
 }

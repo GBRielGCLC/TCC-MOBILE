@@ -68,7 +68,7 @@ buildListView() {
               child: ListTile(
                   onTap: () {},
                   leading: Icon(MenuIcon.table),
-                  title: Text('${itens[index]}'),
+                  title: Text('Mesa ${itens[index]}'),
                   subtitle: Text(
                     '${status[index]}',
                     style: TextStyle(color: corStatus),
@@ -113,7 +113,7 @@ alertDialog(BuildContext context) {
               status[pos] = "Aberta";
               Navigator.of(context).pop();
 
-              Navigator.of(context).pushNamed("/teste");
+              Navigator.of(context).pushNamed("/pedido");
             },
             child: Text(
               "Pedir",
