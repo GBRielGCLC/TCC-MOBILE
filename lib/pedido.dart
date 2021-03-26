@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaria/metodos/carregarDados/bebida.dart';
-import 'package:pizzaria/metodos/carregarDados/sabor.dart';
 import 'package:pizzaria/metodos/carregarDados/tamanho.dart';
+
 
 class Pedido extends StatefulWidget {
   @override
@@ -23,11 +23,11 @@ class _PedidoState extends State<Pedido> with SingleTickerProviderStateMixin {
         centerTitle: true,
         backgroundColor: Colors.red[900],
         bottom: new TabBar(
-          unselectedLabelColor: Colors.red[300],
+          unselectedLabelColor: Colors.red[200],
           indicatorColor: Colors.white,
           controller: _tabController,
           tabs: <Widget>[
-            new Tab(text: "Tamanho"),
+            new Tab(text: "Pizza"),
             new Tab(text: "Bebida"),
           ],
         ),
@@ -47,3 +47,4 @@ class _PedidoState extends State<Pedido> with SingleTickerProviderStateMixin {
   }
 
 }
+

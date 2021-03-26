@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:pizzaria/pedido.dart';
 import 'package:spinner_input/spinner_input.dart';
 
+
 carregarBebida() async{
   var url="https://pizzaria-do-careca.000webhostapp.com/dadosBebida.php";//Link do arquivo que carrega os dados
   var res = await http.get(Uri.encodeFull(url));
@@ -37,12 +38,14 @@ bebida(){
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Card(
                   child: ListTile(
-                    onTap: (){},
+                    onTap: (){
+                      dialogBebida(context, bebida, index);
+                    },
                     title: Text("${bebida[index]['nome']}"),
                     subtitle: Text("R\$ ${bebida[index]['preco']}"),
                     trailing: IconButton(
                       onPressed: (){
-                        dialogBebida(context);
+                        dialogBebida(context, bebida, index);
                       },
                       icon: Icon(Icons.add_shopping_cart),
                       iconSize: 30,
@@ -61,7 +64,7 @@ bebida(){
   );
 }
 
-dialogBebida(BuildContext context) {
+dialogBebida(BuildContext context, bebida, index) {
   showDialog(
     context: context,
     builder: (context) {
@@ -69,7 +72,7 @@ dialogBebida(BuildContext context) {
       return StatefulBuilder(
         builder: (context, setState){
           return AlertDialog(
-            title: Text("Escolha a quantidade"),
+            title: Text("${bebida[index]['nome']}"),
             content: SingleChildScrollView(
               child:Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,19 +91,29 @@ dialogBebida(BuildContext context) {
               ),
             ),
             actions: [
-              RaisedButton(
-                child: Text("Fechar"),
-                onPressed: (){
-                  Navigator.of(context).pop();
-                }
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RaisedButton(
+                      child: Text("Fechar"),
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                      color: Colors.red,
+                    ),
+                    RaisedButton(
+                      child: Text("Adicionar"),
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                      color: Colors.green,
+                    ),
+                  ],
+                ),
               ),
-              RaisedButton(
-                child: Text("Adicionar"),
-                onPressed: (){
-                  Navigator.of(context).pop();
-                }
-              ),
-
             ],
           );
         },
