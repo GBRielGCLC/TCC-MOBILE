@@ -71,6 +71,7 @@ dialogSabor(BuildContext context, tamanho, index) {
       return StatefulBuilder(
         builder: (context, setState){
           return AlertDialog(
+            insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             title: Text("${tamanho[index]['nome']} até ${tamanho[index]['qtdeSabor']} sabores"),
             content: sabor(),
             actions: [

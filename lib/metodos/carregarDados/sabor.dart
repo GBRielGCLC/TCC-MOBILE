@@ -14,7 +14,7 @@ sabor(){
   return FutureBuilder(
       future: carregarSabor(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        List sabor = snapshot.data;
+        List sabores = snapshot.data;
         if(snapshot.connectionState==ConnectionState.waiting){
           return Center(
             child: CircularProgressIndicator(),
@@ -26,27 +26,32 @@ sabor(){
           );
 
         }
-        return ListView.builder(
-          itemCount: sabor.length,
-          itemBuilder: (context, index){
-            double qtde=0;
-            return StatefulBuilder(
-              builder: (context, setState){
-                return ListTile(
-                  title: Text("${sabor[index]['nome']}"),
-                  subtitle: Text("${sabor[index]['descricao']}"),
-                  trailing: SpinnerInput(
-                    spinnerValue: qtde,
-                    onChange: (newValue){
-                      setState((){
-                        qtde = newValue;
-                      });
-                    },
-                  ),
-                );
-              }
-            );
-          },
+        
+
+        return Container(
+          width: MediaQuery.of(context).size.width  ,
+          child: ListView.builder(
+            itemCount: sabores.length,
+            itemBuilder: (context, index){
+              double qtde=0;
+              return StatefulBuilder(
+                builder: (context, setState){
+                  return ListTile(
+                    title: Text("${sabores[index]['nome']}"),
+                    subtitle: Text("${sabores[index]['descricao']}"),
+                    trailing: SpinnerInput(
+                      spinnerValue: qtde,
+                      onChange: (newValue){
+                        setState((){
+                          qtde = newValue;
+                        });
+                      },
+                    ),
+                  );
+                }
+              );
+            },
+          ),
         );
       },
     );
