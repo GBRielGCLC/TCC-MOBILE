@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:pizzaria/metodos/carregarDados/sabor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -70,7 +71,7 @@ dialogSabor(BuildContext context, tamanho, index) {
       return StatefulBuilder(
         builder: (context, setState){
           return AlertDialog(
-            title: Text("${tamanho[index]['nome']}"),
+            title: Text("${tamanho[index]['nome']} até ${tamanho[index]['qtdeSabor']} sabores"),
             content: sabor(),
             actions: [
               Container(
