@@ -14,9 +14,9 @@ while($resultFrom = $statement ->fetch()){
             $myarray,array(
                 "idSabor"=>$resultFrom["idSabor"],
                 "nome"=>$resultFrom["nome"],
-                "precoAdd"=>$resultFrom["precoAdd"],
                 "descricao"=>$resultFrom["descricao"],
                 "disponibilidade"=>$resultFrom["disponibilidade"],
+                "precoAdd"=>$resultFrom["precoAdd"],
             )
         );
     }

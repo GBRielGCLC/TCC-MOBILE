@@ -10,11 +10,11 @@ carregarSabor() async{
 
   return responsBody;
 }
-sabor(){
+sabor(tamanho, indexTamanho){
   return FutureBuilder(
       future: carregarSabor(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        List sabores = snapshot.data;
+        List sabor = snapshot.data;
         if(snapshot.connectionState==ConnectionState.waiting){
           return Center(
             child: CircularProgressIndicator(),
@@ -26,19 +26,43 @@ sabor(){
           );
 
         }
-        
+        List disp;
+        bool existe2;
+        var id = "${tamanho[indexTamanho]['idPizza']}";
+        for (var i = 0; i < sabor.length; i++) {
+          var aux = "${sabor[i]['disponibilidade']}"; 
+          disp = aux.split(",");
+
+          bool existe = false;
+          for (var j = 0; j < disp.length; j++) {//verificar se o sabor está disponível no tamanho
+            if("${disp[j]}"==id){
+              existe2 = true;
+            }
+            else{
+              existe2 = false;
+            }
+            
+            if(existe2 == true){//para saber se está disponivel (prescisa ser feito assim por causa da repetição)
+              existe = true;
+            }
+          }
+          if (existe==false) {
+            sabor.removeAt(i);
+          }
+        }
+
 
         return Container(
-          width: MediaQuery.of(context).size.width  ,
+          width: MediaQuery.of(context).size.width,
           child: ListView.builder(
-            itemCount: sabores.length,
+            itemCount: sabor.length,
             itemBuilder: (context, index){
               double qtde=0;
               return StatefulBuilder(
                 builder: (context, setState){
                   return ListTile(
-                    title: Text("${sabores[index]['nome']}"),
-                    subtitle: Text("${sabores[index]['descricao']}"),
+                    title: Text("${sabor[index]['nome']}"),
+                    subtitle: Text("${sabor[index]['descricao']}"),
                     trailing: SpinnerInput(
                       spinnerValue: qtde,
                       onChange: (newValue){

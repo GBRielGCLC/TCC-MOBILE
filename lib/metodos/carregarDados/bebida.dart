@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:pizzaria/pedido.dart';
 import 'package:spinner_input/spinner_input.dart';
 
 
