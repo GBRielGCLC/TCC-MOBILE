@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaria/carrinho.dart';
 import 'package:pizzaria/pedido.dart';
 import 'package:pizzaria/teste.dart';
+import 'package:pizzaria/carrinho.dart';
 
 import 'mesa.dart';
 
@@ -16,6 +18,7 @@ class AppWidget extends StatelessWidget {
         "/": (context) => Mesa(),
         "/pedido": (context) => Pedido(),
         "/teste": (context) => Teste(),
+        "/carrinho": (context) => Carrinho(),
       },
     );
   }

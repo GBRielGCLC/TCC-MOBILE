@@ -40,7 +40,9 @@ class _PedidoState extends State<Pedido> with SingleTickerProviderStateMixin {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed("/carrinho");
+        },
         child: Icon(Icons.shopping_cart),
       ),
     );
