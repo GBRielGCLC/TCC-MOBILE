@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class Teste extends StatefulWidget {
   @override
@@ -17,47 +15,32 @@ class _TesteState extends State<Teste> {
         backgroundColor: Colors.red[900],
         centerTitle: true,
       ),
-      body: bebida()
+      body: body()
     );
   }
-
-  carregarBebida() async{
-    var url="https://pizzaria-do-careca.000webhostapp.com/dadosBebida.php";//Link do arquivo que carrega os dados
-    var res = await http.get(Uri.encodeFull(url));
-    var responsBody = json.decode(res.body);
-
-    return responsBody;
+  body(){
+    Map teste={
+      'nome' : ['coca','fanta'],
+      'preco' : [5,2],
+    };
+    
   }
-  bebida(){
-    return FutureBuilder(
-        future: carregarBebida(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          List bebida = snapshot.data;
-          if(snapshot.connectionState==ConnectionState.waiting){
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if(snapshot.hasError){
-            return Center(
-              child: Text("Erro"),
-            );
+/*
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
 
-          }
-          return ListView.builder(
-            itemCount: bebida.length,
-            itemBuilder: (context, index){
-              return Card(
-                child: ListTile(
-                  title: Text("${bebida[index]['nome']}"),
-                  subtitle: Text("R\$ ${bebida[index]['preco']}"),
-                ),
-                elevation: 3,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              );
-            },
-          );
-        },
-      );
+    return directory.path;
   }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/counter.txt');
+  }
+
+  Future<File> writeCounter(int counter) async {
+    final file = await _localFile;
+
+    // Write the file.
+    return file.writeAsString('aaaaa');
+  }*/
 }

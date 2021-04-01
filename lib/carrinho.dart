@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaria/metodos/carregarDados/bebida.dart';
 
 class Carrinho extends StatefulWidget {
   @override
@@ -18,88 +19,65 @@ class _CarrinhoState extends State<Carrinho> {
       bottomNavigationBar: bottom(),
     );
   }
+  
+  Map bebida={
+    'nome' : ['coca','fanta','guarana'],
+    'preco' : [5,2,3],
+  };
+  
+  body(){
+    return ListView.builder(
+      itemCount: bebida['nome'].length,
+      itemBuilder: (context,index){
 
-  body() {
-    return Column(
-      children: [
-        SizedBox(
-          height: 10,
-        ),
-        Dismissible(
-          key: ValueKey(1),
-          onDismissed: (direction) {
-            print(direction);
-          },
-          background: Container(
-            color: Colors.yellow,
-            child: Icon(
-              Icons.edit_outlined,
-              color: Colors.white,
-              size: 30,
+        return Column(
+          children: [
+            SizedBox(
+              height: 5,
             ),
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 20),
-          ),
-          secondaryBackground: Container(
-            color: Colors.red,
-            child: Icon(
-              Icons.delete_outline,
-              color: Colors.white,
-              size: 30,
+            Dismissible(
+              key: ValueKey(index),
+              onDismissed: (direction) {
+              },
+              background: Container(
+                color: Colors.yellow,
+                child: Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left: 20),
+              ),
+              secondaryBackground: Container(
+                color: Colors.red,
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: 20),
+              ),
+              child: Card(
+                child: ListTile(
+                  title: Text("${bebida['nome'][index]}"),
+                  subtitle: Text("R\$ ${bebida['preco'][index]}"),
+                ),
+                elevation: 3,
+              ),
             ),
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(right: 20),
-          ),
-          child: Card(
-            child: ListTile(
-              leading: Icon(Icons.local_pizza_outlined,size: 30,),
-              title: Text("Grande"),
-              subtitle: Text("Calabresa, Marguerita",),
-            ),
-            elevation: 3,
-          ),
-        ),
-        SizedBox(
-          height: 5,
-        ),
-        Dismissible(
-          key: ValueKey(2),
-          onDismissed: (direction) {
-            print(direction);
-          },
-          background: Container(
-            color: Colors.yellow,
-            child: Icon(
-              Icons.edit,
-              color: Colors.white,
-              size: 30,
-            ),
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 20),
-          ),
-          secondaryBackground: Container(
-            color: Colors.red,
-            child: Icon(
-              Icons.delete,
-              color: Colors.white,
-              size: 30,
-            ),
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(right: 20),
-          ),
-          child: Card(
-            child: ListTile(
-              title: Text("Guaraná 1l"),
-              subtitle: Text(""),
-            ),
-            elevation: 3,
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
   bottom(){
+    var total = 0;
+    for (var i = 0; i < bebida['nome'].length; i++) {
+      total+=bebida['preco'][i];
+    }
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 20,
@@ -124,7 +102,7 @@ class _CarrinhoState extends State<Carrinho> {
             ),
           ),
           Text(
-            "R\$ 10,00",
+            "R\$ "+total.toString(),
             style: TextStyle(
               fontSize: 20,
               color: Colors.green,
