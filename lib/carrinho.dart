@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pizzaria/metodos/carregarDados/bebida.dart';
 
 class Carrinho extends StatefulWidget {
   @override
@@ -108,10 +107,11 @@ class _CarrinhoState extends State<Carrinho> {
               color: Colors.green,
             ),
           ),
-          RaisedButton(
+          ElevatedButton(
             child: Text("Adicionar"),
-            color: Colors.green,
-            textColor: Colors.white,
+            style: ElevatedButton.styleFrom(
+              primary: Colors.green,
+            ),
             onPressed: (){},
           ),
         ],

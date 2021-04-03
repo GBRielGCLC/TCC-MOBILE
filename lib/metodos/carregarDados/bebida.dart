@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pizzaria/metodos/salvarCarrinho/bebida.dart';
 import 'dart:convert';
 import 'package:spinner_input/spinner_input.dart';
 
@@ -100,19 +101,23 @@ dialogBebida(BuildContext context, bebida, index) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text("Fechar"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                      ),
                       onPressed: (){
                         Navigator.of(context).pop();
                       },
-                      color: Colors.red,
                     ),
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text("Adicionar"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                      ),
                       onPressed: (){
-                        Navigator.of(context).pop();
+                        pegarDados(bebida, index, qtde);
                       },
-                      color: Colors.green,
                     ),
                   ],
                 ),

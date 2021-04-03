@@ -3,7 +3,6 @@ import 'package:pizzaria/metodos/carregarDados/sabor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:spinner_input/spinner_input.dart';
 
 carregarTamanho() async{
   var url="https://pizzaria-do-careca.000webhostapp.com/dadosTamanho.php";//Link do arquivo que carrega os dados
@@ -81,19 +80,19 @@ dialogSabor(BuildContext context, tamanho, index) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text("Fechar"),
-                      onPressed: (){
-                        Navigator.of(context).pop();
-                      },
-                      color: Colors.red,
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                      ),
+                      onPressed: (){},
                     ),
-                    RaisedButton(
+                    ElevatedButton(
                       child: Text("Adicionar"),
-                      onPressed: (){
-                        Navigator.of(context).pop();
-                      },
-                      color: Colors.green,
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green,
+                      ),
+                      onPressed: (){},
                     ),
                   ],
                 ),
