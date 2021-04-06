@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pizzaria/metodos/salvarCarrinho/bebida.dart';
+import 'package:pizzaria/metodos/BD/database_helper.dart';
 import 'dart:convert';
 import 'package:spinner_input/spinner_input.dart';
 
@@ -115,8 +115,15 @@ dialogBebida(BuildContext context, bebida, index) {
                       style: ElevatedButton.styleFrom(
                         primary: Colors.green,
                       ),
-                      onPressed: (){
-                        pegarDados(bebida, index, qtde);
+                      onPressed: () async{
+                        DatabaseHelper.instance.insertBebida({
+                          'id' : bebida[index]['idBebida'],
+                          'nome' : bebida[index]['nome'],
+                          'preco' : bebida[index]['preco'],
+                          'qtde' : qtde,
+                        }); 
+                        
+                        Navigator.of(context).pop();
                       },
                     ),
                   ],

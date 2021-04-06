@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pizzaria/metodos/BD/database_helper.dart';
 
 class Carrinho extends StatefulWidget {
   @override
@@ -14,7 +15,7 @@ class _CarrinhoState extends State<Carrinho> {
         centerTitle: true,
         backgroundColor: Colors.red[900],
       ),
-      body: body(),
+      body: body2(),
       bottomNavigationBar: bottom(),
     );
   }
@@ -23,7 +24,54 @@ class _CarrinhoState extends State<Carrinho> {
     'nome' : ['coca','fanta','guarana'],
     'preco' : [5,2,3],
   };
-  
+
+  carregarBebidaCarrinho() async{
+    List<Map<String,dynamic>> queryRows = await DatabaseHelper.instance.listarBebida();
+
+    print(queryRows);
+    return queryRows;
+  }
+
+  body2() {
+    return FutureBuilder(
+    future: carregarBebidaCarrinho(),
+    builder: (BuildContext context, AsyncSnapshot snapshot) {
+      List bebida = snapshot.data;
+      if(snapshot.connectionState==ConnectionState.waiting){
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+      if(snapshot.hasError){
+        return Center(
+          child: Text("Erro"),
+        );
+
+      }
+      return ListView.builder(
+        itemCount: bebida.length,
+        itemBuilder: (context, index){
+          return Column(
+            children: [
+              SizedBox(height: 10,),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Card(
+                  child: ListTile(
+                    title: Text("${bebida[index]['nome']}"),
+                    subtitle: Text("R\$ ${bebida[index]['preco']}"),
+                  ),
+                elevation: 3,
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+  }
+
   body(){
     return ListView.builder(
       itemCount: bebida['nome'].length,
