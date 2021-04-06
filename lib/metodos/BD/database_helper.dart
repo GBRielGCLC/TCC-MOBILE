@@ -41,7 +41,14 @@ class DatabaseHelper{
 
   Future<int> insertBebida(Map<String,dynamic> row) async{
     Database db = await instance.database;
-    return await db.insert("bebida", row);
+    var id = row['id'];
+    var result =  await db.rawQuery("SELECT * from bebida where id="+id);
+    if (result.isNotEmpty) {
+      print("existe");
+    }
+    else{
+      return await db.insert("bebida", row);
+    }
   }
 
   Future<List<Map<String,dynamic>>> listarBebida() async{  
