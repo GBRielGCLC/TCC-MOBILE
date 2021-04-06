@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaria/metodos/BD/database_helper.dart';
+import 'package:pizzaria/metodos/carregarDados/bebida.dart';
+import 'package:spinner_input/spinner_input.dart';
 
 class Carrinho extends StatefulWidget {
   @override
@@ -19,59 +21,70 @@ class _CarrinhoState extends State<Carrinho> {
       bottomNavigationBar: bottom(),
     );
   }
-  
-  Map bebida={
-    'nome' : ['coca','fanta','guarana'],
-    'preco' : [5,2,3],
-  };
+ 
 
   carregarBebidaCarrinho() async{
     List<Map<String,dynamic>> queryRows = await DatabaseHelper.instance.listarBebida();
 
-    print(queryRows);
     return queryRows;
   }
 
   body2() {
     return FutureBuilder(
-    future: carregarBebidaCarrinho(),
-    builder: (BuildContext context, AsyncSnapshot snapshot) {
-      List bebida = snapshot.data;
-      if(snapshot.connectionState==ConnectionState.waiting){
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-      if(snapshot.hasError){
-        return Center(
-          child: Text("Erro"),
-        );
+      future: carregarBebidaCarrinho(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        List bebida = snapshot.data;
+        if(snapshot.connectionState==ConnectionState.waiting){
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if(snapshot.hasError){
+          return Center(
+            child: Text("Erro"),
+          );
 
-      }
-      return ListView.builder(
-        itemCount: bebida.length,
-        itemBuilder: (context, index){
-          return Column(
-            children: [
-              SizedBox(height: 10,),
-              Container(
+        }
+        return Container(
+          margin: EdgeInsets.only(top:10),
+          child: ListView.builder(
+            itemCount: bebida.length,
+            itemBuilder: (context, index){
+              double qtde = bebida[index]['qtde'].toDouble();
+              return Container(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Card(
                   child: ListTile(
                     title: Text("${bebida[index]['nome']}"),
                     subtitle: Text("R\$ ${bebida[index]['preco']}"),
+                    trailing: SpinnerInput(
+                      spinnerValue: qtde,
+                      minValue: 1,
+                      plusButton: SpinnerButtonStyle(elevation: 0, color: Colors.blue),
+                      minusButton: SpinnerButtonStyle(elevation: 0, color: Colors.red),
+                      middleNumberWidth: 40,
+                      middleNumberBackground: Colors.white,
+                      onChange: (newValue){
+                        setState((){
+                          qtde = newValue;
+                        });
+                      },
+                    ),
                   ),
                 elevation: 3,
                 ),
-              ),
-            ],
-          );
-        },
-      );
-    },
-  );
+              );
+            },
+          ),
+        );
+      },
+    );
   }
-
+ 
+  Map bebida={
+    'nome' : ['coca','fanta','guarana'],
+    'preco' : [5,2,3],
+  };
   body(){
     return ListView.builder(
       itemCount: bebida['nome'].length,
@@ -121,10 +134,6 @@ class _CarrinhoState extends State<Carrinho> {
   }
 
   bottom(){
-    var total = 0;
-    for (var i = 0; i < bebida['nome'].length; i++) {
-      total+=bebida['preco'][i];
-    }
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 20,
@@ -149,7 +158,7 @@ class _CarrinhoState extends State<Carrinho> {
             ),
           ),
           Text(
-            "R\$ "+total.toString(),
+            "R\$ ",//+total.toString(),
             style: TextStyle(
               fontSize: 20,
               color: Colors.green,
