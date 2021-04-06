@@ -49,6 +49,9 @@ class DatabaseHelper{
     return await db.query("bebida");
   }
 
-
+  Future<int> limpar() async{
+    Database db = await instance.database;
+    return await db.delete("bebida");
+  }
 
 }

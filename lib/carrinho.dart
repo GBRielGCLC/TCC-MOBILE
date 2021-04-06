@@ -164,13 +164,68 @@ class _CarrinhoState extends State<Carrinho> {
               color: Colors.green,
             ),
           ),
-          ElevatedButton(
-            child: Text("Adicionar"),
-            style: ElevatedButton.styleFrom(
-              primary: Colors.green,
-            ),
-            onPressed: (){},
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                child: Text("Limpar"),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.red,
+                ),
+                onPressed: (){
+                  showDialog(
+                    context: context, 
+                    builder: (context){
+                      return AlertDialog(
+                        title: Text("Limpar carrinho"),
+                        content: Text("Tem certeza?"),
+                        actions: [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ElevatedButton(
+                                  child: Text("Cancelar"),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red,
+                                  ),
+                                  onPressed: (){
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: Text("Limpar"),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    DatabaseHelper.instance.limpar();
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushNamed("/carrinho");
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  );
+                },
+              ),
+              ElevatedButton(
+                child: Text("Adicionar"),
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.green,
+                ),
+                onPressed: (){},
+              ),
+              
+            ],
+          )
         ],
       ),
     );
