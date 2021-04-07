@@ -56,6 +56,32 @@ class DatabaseHelper{
     return await db.query("bebida");
   }
 
+  Future<int> deleteBebida(int id) async{
+    Database db = await instance.database;
+    return await db.delete("bebida",where: 'id = ?',whereArgs: [id]);
+  }
+
+  Future<int> updateBebida(int id, int qtde) async{
+    Database db = await instance.database;
+    await db.rawQuery("UPDATE bebida SET qtde="+qtde.toString()+" where id="+id.toString());
+  }
+
+
+  Future<double> calcularValor() async{
+    Database db = await instance.database;
+    var bebida =  await db.rawQuery("SELECT preco,qtde from bebida");
+
+    double total=0,preco=0;
+    int qtde=0;
+
+    for (var i = 0; i < bebida.length; i++) {
+      qtde = bebida[i]["qtde"];
+      preco = bebida[i]["preco"];
+      total += preco*qtde;
+    }
+    return total;
+  }
+
   Future<int> limpar() async{
     Database db = await instance.database;
     return await db.delete("bebida");

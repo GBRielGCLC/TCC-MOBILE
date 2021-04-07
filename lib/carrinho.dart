@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pizzaria/metodos/BD/database_helper.dart';
-import 'package:pizzaria/metodos/carregarDados/bebida.dart';
 import 'package:spinner_input/spinner_input.dart';
 
 class Carrinho extends StatefulWidget {
@@ -17,7 +16,7 @@ class _CarrinhoState extends State<Carrinho> {
         centerTitle: true,
         backgroundColor: Colors.red[900],
       ),
-      body: body2(),
+      body: body(),
       bottomNavigationBar: bottom(),
     );
   }
@@ -29,21 +28,16 @@ class _CarrinhoState extends State<Carrinho> {
     return queryRows;
   }
 
-  body2() {
+  var total;
+  body() {
     return FutureBuilder(
       future: carregarBebidaCarrinho(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List bebida = snapshot.data;
-        if(snapshot.connectionState==ConnectionState.waiting){
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
         if(snapshot.hasError){
           return Center(
             child: Text("Erro"),
           );
-
         }
         return Container(
           margin: EdgeInsets.only(top:10),
@@ -51,27 +45,57 @@ class _CarrinhoState extends State<Carrinho> {
             itemCount: bebida.length,
             itemBuilder: (context, index){
               double qtde = bebida[index]['qtde'].toDouble();
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Card(
-                  child: ListTile(
-                    title: Text("${bebida[index]['nome']}"),
-                    subtitle: Text("R\$ ${bebida[index]['preco']}"),
-                    trailing: SpinnerInput(
-                      spinnerValue: qtde,
-                      minValue: 1,
-                      plusButton: SpinnerButtonStyle(elevation: 0, color: Colors.blue),
-                      minusButton: SpinnerButtonStyle(elevation: 0, color: Colors.red),
-                      middleNumberWidth: 40,
-                      middleNumberBackground: Colors.white,
-                      onChange: (newValue){
-                        setState((){
-                          qtde = newValue;
-                        });
-                      },
-                    ),
+              int id = bebida[index]['id'].toInt();
+              return Dismissible(
+                key: UniqueKey(),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) async{
+                  await DatabaseHelper.instance.deleteBebida(id);
+                  setState(() {});
+                },
+                background: Container(
+                  color: Colors.yellow,
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                    size: 30,
                   ),
-                elevation: 3,
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(left: 20),
+                ),
+                secondaryBackground: Container(
+                  color: Colors.red,
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 20),
+                ),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: Card(
+                    child: ListTile(
+                      title: Text("${bebida[index]['nome']}"),
+                      subtitle: Text("R\$ ${bebida[index]['preco']}"),
+                      trailing: SpinnerInput(
+                        spinnerValue: qtde,
+                        minValue: 1,
+                        plusButton: SpinnerButtonStyle(elevation: 0, color: Colors.blue),
+                        minusButton: SpinnerButtonStyle(elevation: 0, color: Colors.red),
+                        middleNumberWidth: 40,
+                        middleNumberBackground: Colors.white,
+                        onChange: (newValue){
+                          setState((){
+                            qtde = newValue;
+                            DatabaseHelper.instance.updateBebida(id, qtde.toInt());
+                          });
+                        },
+                      ),
+                    ),
+                  elevation: 3,
+                  ),
                 ),
               );
             },
@@ -80,154 +104,125 @@ class _CarrinhoState extends State<Carrinho> {
       },
     );
   }
- 
-  Map bebida={
-    'nome' : ['coca','fanta','guarana'],
-    'preco' : [5,2,3],
-  };
-  body(){
-    return ListView.builder(
-      itemCount: bebida['nome'].length,
-      itemBuilder: (context,index){
 
-        return Column(
-          children: [
-            SizedBox(
-              height: 5,
-            ),
-            Dismissible(
-              key: ValueKey(index),
-              onDismissed: (direction) {
-              },
-              background: Container(
-                color: Colors.yellow,
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 20),
+  calcularValorTotal() async{
+    total = await DatabaseHelper.instance.calcularValor();
+    return total;
+  }
+  bottom(){
+    return StatefulBuilder(
+      builder: (context, setState){
+        return FutureBuilder(
+          future: calcularValorTotal(),
+          builder: (BuildContext context, AsyncSnapshot snapshot){
+            double total = snapshot.data;
+            if(snapshot.hasError){
+              return Center(
+                child: Text("Erro"),
+              );
+            }
+            return Container(
+              padding: EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: MediaQuery.of(context).size.width*0.1,
               ),
-              secondaryBackground: Container(
-                color: Colors.red,
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                alignment: Alignment.centerRight,
-                padding: EdgeInsets.only(right: 20),
+              height: MediaQuery.of(context).size.height*0.2,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
+                boxShadow: [BoxShadow(
+                  offset: Offset(0,-15),
+                  blurRadius: 20,
+                  color: Colors.grey[200],
+                )]
               ),
-              child: Card(
-                child: ListTile(
-                  title: Text("${bebida['nome'][index]}"),
-                  subtitle: Text("R\$ ${bebida['preco'][index]}"),
-                ),
-                elevation: 3,
+              child: Column(
+                children: [
+                  Text(
+                    "Total:",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                  Text(
+                    "R\$ "+total.toString(),
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.green,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        child: Text("Limpar"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                        ),
+                        onPressed: (){
+                          dialogConfirmar();
+                        },
+                      ),
+                      ElevatedButton(
+                        child: Text("Adicionar"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.green,
+                        ),
+                        onPressed: (){},
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            );
+          },
+        );
+      }
+    );
+  }
+
+  dialogConfirmar(){
+    showDialog(
+      context: context, 
+      builder: (context){
+        return AlertDialog(
+          title: Text("Limpar carrinho"),
+          content: Text("Tem certeza?"),
+          actions: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    child: Text("Cancelar"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                    ),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text("Limpar"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                    ),
+                    onPressed: () {
+                      DatabaseHelper.instance.limpar();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed("/carrinho");
+                    },
+                  ),
+                ],
               ),
             ),
           ],
         );
-      },
+      }
     );
   }
 
-  bottom(){
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 20,
-        horizontal: MediaQuery.of(context).size.width*0.1,
-      ),
-      height: MediaQuery.of(context).size.height*0.2,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
-        boxShadow: [BoxShadow(
-          offset: Offset(0,-15),
-          blurRadius: 20,
-          color: Colors.grey[200],
-        )]
-      ),
-      child: Column(
-        children: [
-          Text(
-            "Total:",
-            style: TextStyle(
-              fontSize: 20,
-            ),
-          ),
-          Text(
-            "R\$ ",//+total.toString(),
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.green,
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ElevatedButton(
-                child: Text("Limpar"),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.red,
-                ),
-                onPressed: (){
-                  showDialog(
-                    context: context, 
-                    builder: (context){
-                      return AlertDialog(
-                        title: Text("Limpar carrinho"),
-                        content: Text("Tem certeza?"),
-                        actions: [
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 10),
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ElevatedButton(
-                                  child: Text("Cancelar"),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.red,
-                                  ),
-                                  onPressed: (){
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                ElevatedButton(
-                                  child: Text("Limpar"),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.green,
-                                  ),
-                                  onPressed: () {
-                                    DatabaseHelper.instance.limpar();
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context).pushNamed("/carrinho");
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                  );
-                },
-              ),
-              ElevatedButton(
-                child: Text("Adicionar"),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
-                ),
-                onPressed: (){},
-              ),
-              
-            ],
-          )
-        ],
-      ),
-    );
-  }
 }

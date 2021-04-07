@@ -81,8 +81,8 @@ dialogBebida(BuildContext context, bebida, index) {
                   SpinnerInput(
                     spinnerValue: qtde,
                     minValue: 1,
-                    plusButton: SpinnerButtonStyle(elevation: 0, color: Colors.blue, borderRadius: BorderRadius.circular(0)),
-                    minusButton: SpinnerButtonStyle(elevation: 0, color: Colors.red, borderRadius: BorderRadius.circular(0)),
+                    plusButton: SpinnerButtonStyle(elevation: 0, color: Colors.blue),
+                    minusButton: SpinnerButtonStyle(elevation: 0, color: Colors.red),
                     middleNumberWidth: 40,
                     middleNumberBackground: Colors.white,
                     onChange: (newValue){
