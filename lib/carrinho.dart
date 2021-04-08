@@ -45,6 +45,11 @@ class _CarrinhoState extends State<Carrinho> {
       future: carregarBebidaCarrinho(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List bebida = snapshot.data;
+        if(snapshot.connectionState==ConnectionState.waiting){
+          return Center(
+            child: Text(""),
+          );
+        }
         if(snapshot.hasError){
           return Center(
             child: Text("Erro"),
