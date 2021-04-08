@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pizzaria/metodos/BD/database_helper.dart';
 import 'package:spinner_input/spinner_input.dart';
@@ -8,6 +10,16 @@ class Carrinho extends StatefulWidget {
 }
 
 class _CarrinhoState extends State<Carrinho> {
+  final _streamController = StreamController<double>();
+
+  @override
+  void initState(){
+    super.initState();
+
+    carregarBebidaCarrinho();
+    calcularValorTotal();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +36,6 @@ class _CarrinhoState extends State<Carrinho> {
 
   carregarBebidaCarrinho() async{
     List<Map<String,dynamic>> queryRows = await DatabaseHelper.instance.listarBebida();
-
     return queryRows;
   }
 
@@ -47,11 +58,11 @@ class _CarrinhoState extends State<Carrinho> {
               double qtde = bebida[index]['qtde'].toDouble();
               int id = bebida[index]['id'].toInt();
               return Dismissible(
-                key: UniqueKey(),
+                key: ValueKey(id),
                 direction: DismissDirection.endToStart,
                 onDismissed: (direction) async{
                   await DatabaseHelper.instance.deleteBebida(id);
-                  setState(() {});
+                  calcularValorTotal();
                 },
                 background: Container(
                   color: Colors.yellow,
@@ -90,6 +101,7 @@ class _CarrinhoState extends State<Carrinho> {
                           setState((){
                             qtde = newValue;
                             DatabaseHelper.instance.updateBebida(id, qtde.toInt());
+                            calcularValorTotal();
                           });
                         },
                       ),
@@ -107,77 +119,73 @@ class _CarrinhoState extends State<Carrinho> {
 
   calcularValorTotal() async{
     total = await DatabaseHelper.instance.calcularValor();
-    return total;
+    _streamController.add(total);
   }
   bottom(){
-    return StatefulBuilder(
-      builder: (context, setState){
-        return FutureBuilder(
-          future: calcularValorTotal(),
-          builder: (BuildContext context, AsyncSnapshot snapshot){
-            double total = snapshot.data;
-            if(snapshot.hasError){
-              return Center(
-                child: Text("Erro"),
-              );
-            }
-            return Container(
-              padding: EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: MediaQuery.of(context).size.width*0.1,
+    return StreamBuilder(
+      stream: _streamController.stream,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        double total = snapshot.data;
+        if(snapshot.hasError){
+          return Center(
+            child: Text("Erro"),
+          );
+        }
+        return Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: MediaQuery.of(context).size.width*0.1,
+          ),
+          height: MediaQuery.of(context).size.height*0.2,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
+            boxShadow: [BoxShadow(
+              offset: Offset(0,-15),
+              blurRadius: 20,
+              color: Colors.grey[200],
+            )]
+          ),
+          child: Column(
+            children: [
+              Text(
+                "Total:",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
               ),
-              height: MediaQuery.of(context).size.height*0.2,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
-                boxShadow: [BoxShadow(
-                  offset: Offset(0,-15),
-                  blurRadius: 20,
-                  color: Colors.grey[200],
-                )]
+              Text(
+                "R\$ "+total.toString(),
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.green,
+                ),
               ),
-              child: Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Total:",
-                    style: TextStyle(
-                      fontSize: 20,
+                  ElevatedButton(
+                    child: Text("Limpar"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
                     ),
+                    onPressed: (){
+                      dialogConfirmar();
+                    },
                   ),
-                  Text(
-                    "R\$ "+total.toString(),
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.green,
+                  ElevatedButton(
+                    child: Text("Adicionar"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
                     ),
+                    onPressed: (){},
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        child: Text("Limpar"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
-                        ),
-                        onPressed: (){
-                          dialogConfirmar();
-                        },
-                      ),
-                      ElevatedButton(
-                        child: Text("Adicionar"),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                        ),
-                        onPressed: (){},
-                      ),
-                    ],
-                  )
                 ],
-              ),
-            );
-          },
+              )
+            ],
+          ),
         );
-      }
+      },
     );
   }
 
@@ -226,3 +234,59 @@ class _CarrinhoState extends State<Carrinho> {
   }
 
 }
+
+/*
+        return Container(
+          padding: EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: MediaQuery.of(context).size.width*0.1,
+          ),
+          height: MediaQuery.of(context).size.height*0.2,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
+            boxShadow: [BoxShadow(
+              offset: Offset(0,-15),
+              blurRadius: 20,
+              color: Colors.grey[200],
+            )]
+          ),
+          child: Column(
+            children: [
+              Text(
+                "Total:",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              Text(
+                "R\$ "+total.toString(),
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.green,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    child: Text("Limpar"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                    ),
+                    onPressed: (){
+                      dialogConfirmar();
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text("Adicionar"),
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                    ),
+                    onPressed: (){},
+                  ),
+                ],
+              )
+            ],
+          ),
+        );*/
