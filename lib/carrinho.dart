@@ -10,7 +10,8 @@ class Carrinho extends StatefulWidget {
 }
 
 class _CarrinhoState extends State<Carrinho> {
-  final _streamController = StreamController<double>();
+  final _streamControllerBottom = StreamController<double>();
+  final _streamControllerBody = StreamController<List>();
 
   @override
   void initState(){
@@ -36,13 +37,13 @@ class _CarrinhoState extends State<Carrinho> {
 
   carregarBebidaCarrinho() async{
     List<Map<String,dynamic>> queryRows = await DatabaseHelper.instance.listarBebida();
-    return queryRows;
+    _streamControllerBody.add(queryRows);
   }
 
   var total;
   body() {
-    return FutureBuilder(
-      future: carregarBebidaCarrinho(),
+    return StreamBuilder(
+      stream: _streamControllerBody.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         List bebida = snapshot.data;
         if(snapshot.connectionState==ConnectionState.waiting){
@@ -106,6 +107,7 @@ class _CarrinhoState extends State<Carrinho> {
                           setState((){
                             qtde = newValue;
                             DatabaseHelper.instance.updateBebida(id, qtde.toInt());
+                            carregarBebidaCarrinho();
                             calcularValorTotal();
                           });
                         },
@@ -124,11 +126,11 @@ class _CarrinhoState extends State<Carrinho> {
 
   calcularValorTotal() async{
     total = await DatabaseHelper.instance.calcularValor();
-    _streamController.add(total);
+    _streamControllerBottom.add(total);
   }
   bottom(){
     return StreamBuilder(
-      stream: _streamController.stream,
+      stream: _streamControllerBottom.stream,
       builder: (BuildContext context, AsyncSnapshot snapshot){
         double total = snapshot.data;
         if(snapshot.hasError){
@@ -225,8 +227,8 @@ class _CarrinhoState extends State<Carrinho> {
                     onPressed: () {
                       DatabaseHelper.instance.limpar();
                       Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pushNamed("/carrinho");
+                      carregarBebidaCarrinho();
+                      calcularValorTotal();
                     },
                   ),
                 ],
@@ -239,59 +241,3 @@ class _CarrinhoState extends State<Carrinho> {
   }
 
 }
-
-/*
-        return Container(
-          padding: EdgeInsets.symmetric(
-            vertical: 20,
-            horizontal: MediaQuery.of(context).size.width*0.1,
-          ),
-          height: MediaQuery.of(context).size.height*0.2,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
-            boxShadow: [BoxShadow(
-              offset: Offset(0,-15),
-              blurRadius: 20,
-              color: Colors.grey[200],
-            )]
-          ),
-          child: Column(
-            children: [
-              Text(
-                "Total:",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                "R\$ "+total.toString(),
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.green,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton(
-                    child: Text("Limpar"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                    ),
-                    onPressed: (){
-                      dialogConfirmar();
-                    },
-                  ),
-                  ElevatedButton(
-                    child: Text("Adicionar"),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                    ),
-                    onPressed: (){},
-                  ),
-                ],
-              )
-            ],
-          ),
-        );*/

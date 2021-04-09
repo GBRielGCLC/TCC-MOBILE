@@ -11,7 +11,7 @@ class _TesteState extends State<Teste> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Baixando dados da web", textAlign: TextAlign.center,),
+        title: Text("Teste", textAlign: TextAlign.center,),
         backgroundColor: Colors.red[900],
         centerTitle: true,
       ),
@@ -19,28 +19,6 @@ class _TesteState extends State<Teste> {
     );
   }
   body(){
-    Map teste={
-      'nome' : ['coca','fanta'],
-      'preco' : [5,2],
-    };
-    
-  }
-/*
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-
-    return directory.path;
   }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/counter.txt');
-  }
-
-  Future<File> writeCounter(int counter) async {
-    final file = await _localFile;
-
-    // Write the file.
-    return file.writeAsString('aaaaa');
-  }*/
 }
