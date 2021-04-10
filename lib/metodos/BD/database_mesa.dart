@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:spinner_input/spinner_input.dart';
 
-
-double qtde=getQuantidade();
-
+double qtde=0;
 dialogQtde(BuildContext context){
   showDialog(
     context: context,
@@ -48,8 +46,7 @@ dialogQtde(BuildContext context){
                         primary: Colors.red,
                       ),
                       onPressed: (){
-                        getQuantidade();
-                        //Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                       },
                     ),
                     ElevatedButton(
