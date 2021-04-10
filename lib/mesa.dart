@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pizzaria/metodos/BD/database_mesa.dart';
 
 import 'Icons/menu_icons.dart';
 
@@ -18,16 +19,28 @@ class _MesaState extends State<Mesa> {
     }
 
     return new Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red[900],
-      ),
+      appBar: appBar(context),
       body: RefreshIndicator(
         key: refreshKey,
         onRefresh: refreshList,
-        child: buildListView(),
+        child: listaMesas(),
       ),
     );
   }
+}
+
+appBar(context){
+  return AppBar(
+    backgroundColor: Colors.red[900],
+    actions: [
+      IconButton(
+        onPressed: (){
+          dialogQtde(context);
+        },
+        icon: Icon(Icons.settings),
+      )
+    ],
+  );
 }
 
 int pos, nMesa;
@@ -39,12 +52,13 @@ final status = List<String>.generate(5, (i) => 'Fechada');
 final open = List<bool>.generate(5, (i) => true);
 final itens = List<int>.generate(5, (i) => i + 1);
 
-buildListView() {
+listaMesas() {
   for (int i = 0; i < itens.length; i++) {
     if (status[i] == "Fechada") {
       open[i] = false;
       cor[i] = 50;
-    } else {
+    } 
+    else {
       open[i] = true;
       cor[i] = 300;
     }
