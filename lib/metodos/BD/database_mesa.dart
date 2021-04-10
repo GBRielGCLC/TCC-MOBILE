@@ -22,7 +22,7 @@ dialogQtde(BuildContext context){
                     minValue: 0,
                     plusButton: SpinnerButtonStyle(elevation: 0, color: Colors.blue),
                     minusButton: SpinnerButtonStyle(elevation: 0, color: Colors.red),
-                    middleNumberWidth: 40,
+                    middleNumberWidth: 80,
                     middleNumberBackground: Colors.white,
                     onChange: (newValue){
                       setState((){
@@ -84,6 +84,12 @@ insertQuantidade() async{
 }
 
 getQuantidade() async{
-  final response = await http.read("$_baseUrl/mesas.json");
-  return response;
+  final res= await http.read("$_baseUrl/mesas.json");
+  var response = jsonDecode(res);
+  return response['qtde'];
+}
+
+teste() async{
+  var aux = await getQuantidade();
+  print(aux);
 }
